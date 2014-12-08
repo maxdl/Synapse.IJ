@@ -7,7 +7,7 @@ micrographs. Specifically, it is used to analyse gold labeling along membrane
 segments or other open linear paths. It is of course also possible to use the
 tool for other types of two-dimensional spatial point patterns.
 
-Synapse.IJ is used in conjunction with its companion ImageJ plugin,
+Synapse.IJ is used in conjunction with its companion Python component,
 Synapse.py.
 
 Please see the `website <http://www.hu.liu.se/forskning/larsson-max/software>`_ 
