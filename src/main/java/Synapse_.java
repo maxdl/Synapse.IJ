@@ -26,10 +26,10 @@ import ij.measure.*;
 interface VersionSyn {
     String title = "Synapse";
     String author = "Max Larsson";
-    String version = "1.1.0";
-    String year = "2014";
-    String month = "November";
-    String day = "11";
+    String version = "1.2.1";
+    String year = "2018";
+    String month = "May";
+    String day = "31";
     String email = "max.larsson@liu.se";
     String homepage = "http://www.hu.liu.se/forskning/larsson-max/software";
 }
@@ -47,7 +47,7 @@ interface Options_Syn {
 
 
 public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener {
-	
+
 	Panel panel;
 	static Frame instance;
     static Choice postruct;
@@ -61,14 +61,14 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
 	Label poselnLabel;
 	Label psdnLabel;
 	Label pnLabel;
-    Label holenLabel;        
+    Label holenLabel;
     Label randomPlacedLabel;
 	Label commentLabel;
 	Label scaleLabel;
 	ProfileData profile;
 	ImagePlus imp;
 
-	
+
 	public Synapse_() {
 		super("Synapse");
 		if (instance != null) {
@@ -90,7 +90,7 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
 		addButton("Presynaptic element");
 		addButton("Postsynaptic element");
 		addButton("Postsynaptic density");
-		addButton("Hole");        
+		addButton("Hole");
         addButton("Points");
 		panel.add(new Label(""));
         addButton("Place random points");
@@ -100,13 +100,13 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
         subPanelA.setLayout(new GridLayout(1, 2, 0, 0));
         subPanelA.add(new Label("Presyn. structure"));
         subPanelA.add(new Label("Postsyn. structure"));
-        subPanelA.setVisible(true);                                
+        subPanelA.setVisible(true);
         subPanelB = new Panel();
         panel.add(subPanelB);
         subPanelB.setLayout(new GridLayout(1, 2, 0, 0));
         prestruct = new Choice();
-        prestruct.add("Not specified");                
-        subPanelB.add(prestruct);                
+        prestruct.add("Not specified");
+        subPanelB.add(prestruct);
         postruct = new Choice();
         postruct.add("Not specified");
         subPanelB.add(postruct);
@@ -117,17 +117,17 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
         addButton("Delete postsynaptic element");
         addButton("Delete postsynaptic density");
         addButton("Delete points");
-        addButton("Delete random points");        
+        addButton("Delete random points");
         addButton("Delete selected component");
         panel.add(new Label(""));
         panel.add(new Label("Other:"));
 		addButton("Add comment");
-        panel.add(new Label(""));                
+        panel.add(new Label(""));
 		panel.add(new Label("Settings:"));
         addButton("Set profile n");
-        addButton("Define presynaptic structure");                
+        addButton("Define presynaptic structure");
         addButton("Define postsynaptic structure");
-        addButton("Options_Syn...");
+        addButton("Options...");
         addButton("About...");
 		add(panel);
 		pack();
@@ -176,7 +176,7 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
 		infoFrame.setVisible(true);
 		instance.requestFocus();
 	}
-	
+
 	void addButton(String label) {
 		Button b = new Button(label);
 		b.addActionListener(this);
@@ -188,21 +188,21 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
         c.gridwidth = 1;
         infoPanel.setConstraints(l, c);
         infoFrame.add(l);
-    }	
+    }
 
     void addVarInfoLabel(Label l) {
          c.gridwidth = GridBagConstraints.REMAINDER;
          infoPanel.setConstraints(l, c);
          infoFrame.add(l);
-    }	
-	
+    }
+
 	PolygonRoi getPolylineRoi(ImagePlus imp) {
 		Roi roi = imp.getRoi();
 		if (roi == null || roi.getType() != Roi.POLYLINE) {
 			IJ.error("Segmented line selection required.");
 			return null;
 		} else {
-			return (PolygonRoi) roi; 
+			return (PolygonRoi) roi;
 		}
 	}
 
@@ -212,10 +212,10 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
             IJ.error("Synapse", "Polygon selection required.");
             return null;
         } else {
-            return (PolygonRoi) roi; 
+            return (PolygonRoi) roi;
         }
-    }    
-    
+    }
+
     PolygonRoi getPointRoi(ImagePlus imp) {
             Roi roi = imp.getRoi();
             if (roi == null || roi.getType() != Roi.POINT) {
@@ -225,11 +225,11 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
                     return (PolygonRoi) roi;
             }
     }
-        
+
 	void updateInfoPanel() {
         double pixelwidth;
         String unit;
-            
+
 		profile_nLabel.setText(IJ.d2s(profile.ntot, 0));
         pnLabel.setText(IJ.d2s(profile.getNumPoints("points"), 0));
 		preelnLabel.setText(IJ.d2s(profile.getNumPoints("presynaptic element"), 0));
@@ -258,10 +258,10 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
 			IJ.beep();
 			IJ.showStatus("No image");
 			return false;
-		}	    
+		}
 		return true;
 	}
-			
+
 	public void actionPerformed(ActionEvent e) {
 		PolygonRoi p;
         Polygon randomPol;
@@ -271,15 +271,15 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
 
 		String command = e.getActionCommand();
 		if (command == null) {
-			return; 
+			return;
 		}
         imp = WindowManager.getCurrentImage();
         imp.setOverlay(profile.overlay);
         if (imp != null && imp.getType() != ImagePlus.COLOR_RGB) {
             imp.setProcessor(imp.getTitle(), imp.getProcessor().convertToRGB());
-        }        
+        }
 		if (command.equals("Save profile")) {
-            if (!isImage(imp)) { 
+            if (!isImage(imp)) {
                 return;
             }
             if (!profile.dirty) {
@@ -291,7 +291,7 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
                         IJ.showMessage("Presynaptic structure not specified.");
                         return;
                     }
-                }                            
+                }
                 if (postruct.getItemCount() > 1) {
                     profile.poProfile = postruct.getSelectedItem();
                     if (profile.poProfile.equals("Not specified")) {
@@ -306,11 +306,11 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
 			}
 		}
 		if (command.equals("Clear profile")) {
-            if (!isImage(imp)) { 
+            if (!isImage(imp)) {
                 return;
             }
 			if (profile.dirty) {
-				YesNoCancelDialog d = new YesNoCancelDialog(imp.getWindow(), 
+				YesNoCancelDialog d = new YesNoCancelDialog(imp.getWindow(),
 					"Profile", "Profile has not been saved. Save to file?");
 				if (d.yesPressed()) {
 					profile.dirty = !profile.save(imp);
@@ -321,8 +321,8 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
 			if (!profile.dirty) {
 				profile.clear();
 				IJ.showStatus("Profile cleared.");
-			} 	
-		}	
+			}
+		}
 		if (command.equals("Presynaptic element")) {
             if (!isImage(imp) || !profile.isSameImage(imp) ||
                 profile.isDefined("presynaptic element", "Presynaptic element")) {
@@ -352,8 +352,8 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
                 return;
             }
 			if (profile.getNum("postsynaptic density") != 0) {
-				YesNoCancelDialog d = new YesNoCancelDialog(imp.getWindow(), 
-					"Synapse", "PSD already contains coordinates. Add " + 
+				YesNoCancelDialog d = new YesNoCancelDialog(imp.getWindow(),
+					"Synapse", "PSD already contains coordinates. Add " +
 				    "a new PSD? To overwrite, cancel and delete old instance first.");
 				if (d.cancelPressed()) {
 					return;
@@ -436,7 +436,7 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
                 return;
             }
             profile.deleteNamedComponent(imp, "random points");
-        }        
+        }
         if (command.equals("Delete selected component")) {
             if ((imp.getRoi()) != null) {
                 profile.deleteSelectedComponent(imp);
@@ -445,14 +445,14 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
         if (command.equals("Set profile n")) {
             s = IJ.getString("Set profile n", IJ.d2s(profile.ntot, 0));
             profile.ntot = java.lang.Integer.parseInt(s);
-        }             
+        }
         if (command.equals("Define postsynaptic structure")) {
             s = IJ.getString("Define postsynaptic structure", "");
             if (!s.equals("")) {
                 for (i = 0; i < postruct.getItemCount(); i++) {
                     if (s.equals(postruct.getItem(i))) {
-                        YesNoCancelDialog d = new YesNoCancelDialog(imp.getWindow(), 
-                        "Synapse", "Postsynaptic structure '" + s 
+                        YesNoCancelDialog d = new YesNoCancelDialog(imp.getWindow(),
+                        "Synapse", "Postsynaptic structure '" + s
                          + "' already defined. Remove?");
                         if (d.yesPressed()) {
                             postruct.remove(i);
@@ -468,21 +468,21 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
 			if (!s.equals("")) {
                 for (i = 0; i < prestruct.getItemCount(); i++) {
                     if (s.equals(prestruct.getItem(i))) {
-                        YesNoCancelDialog d = new YesNoCancelDialog(imp.getWindow(), 
-                        "Synapse", "Presynaptic structure '" + s 
+                        YesNoCancelDialog d = new YesNoCancelDialog(imp.getWindow(),
+                        "Synapse", "Presynaptic structure '" + s
                          + "' already defined. Remove?");
                         if (d.yesPressed()) {
                             prestruct.remove(i);
                         }
                         return;
                     }
-                }     
+                }
                 prestruct.add(s);
 			}
-        }                
+        }
 		if (command.equals("Add comment")) {
             if (!isImage(imp) || !profile.isSameImage(imp)) {
-                return;		    
+                return;
             }
 			s = IJ.getString("Comment: ", profile.comment);
 			if (!s.equals("")) {
@@ -490,8 +490,8 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
 				profile.dirty = true;
 			}
 		}
-		if (command.equals("Options_Syn...")) {
-            GenericDialog gd = new GenericDialog("Options_Syn");
+		if (command.equals("Options...")) {
+            GenericDialog gd = new GenericDialog("Options");
             gd.setInsets(0, 0, 0);
             gd.addMessage("Random particles:");
             gd.addNumericField("Random particle n:", profile.randompn, 0);
@@ -502,10 +502,10 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
             if (profile.randompn <= 0) {
                 IJ.error("Random point n must be larger than 0. Reverting to default value (40).");
                 profile.randompn = 40;
-            }                        
+            }
 		}
 		if (command.equals("About...")) {
-            String aboutHtml = String.format("<html><p><strong>%s" + 
+            String aboutHtml = String.format("<html><p><strong>%s" +
                                              "</strong></p><br />" +
                                              "<p>VersionSyn %s</p><br />" +
                                              "<p>Last modified %s %s, %s.</p>" +
@@ -544,23 +544,23 @@ public class Synapse_ extends PlugInFrame implements Options_Syn, ActionListener
 
 class ProfileData implements Options_Syn {
 	boolean dirty;
-    Overlay overlay;
+  Overlay overlay;
 	int n, ntot, randompn, i;
 	int imgID;
 	String comment, preProfile, poProfile, prevImg, ID;
 
-    ProfileData() {
+  ProfileData() {
 		this.n = 0;
 		this.ntot = 1;
 		this.prevImg = "";
 		this.imgID = 0;
 		this.dirty = false;
-        this.overlay = new Overlay();
+    this.overlay = new Overlay();
 		this.comment = "";
-        this.randompn = 200;
-        this.preProfile = "";
-        this.poProfile = "";
-        this.ID = "";        
+    this.randompn = 200;
+    this.preProfile = "";
+    this.poProfile = "";
+    this.ID = "";
 	}
 
     // Returns number of ROIs named 'name' in the overlay. Returns 0 if ROI not found in overlay.
@@ -615,7 +615,7 @@ class ProfileData implements Options_Syn {
 		} else if (this.imgID == imp.getID()) {
 			return true;
 		} else {
-			IJ.showMessage("All measurements must be performed on the same " + 
+			IJ.showMessage("All measurements must be performed on the same " +
 						   "image.");
 			return false;
 		}
@@ -628,15 +628,15 @@ class ProfileData implements Options_Syn {
         }
         return false;
     }
-	
+
 
 	private boolean CheckProfileData(ImagePlus imp) {
         String[] warnstr, errstr;
         int i, nwarn = 0, nerr = 0;
-        
+
         warnstr = new String[9];
         errstr = new String[9];
-        Calibration c = imp.getCalibration();      
+        Calibration c = imp.getCalibration();
         if (c.getUnit().equals(" ")) {
             errstr[nerr++] = "The scale has not been set.";
         }
@@ -655,23 +655,23 @@ class ProfileData implements Options_Syn {
         if (nerr > 0) {
             IJ.error("Synapse", "Error: " + errstr[0]);
             return false;
-        }               
-        
+        }
+
 		if (nwarn > 0) {
 			for (i = 0; i < nwarn; i++) {
-				YesNoCancelDialog d = new YesNoCancelDialog(imp.getWindow(), 
+				YesNoCancelDialog d = new YesNoCancelDialog(imp.getWindow(),
 					"Synapse", "Warning: " + warnstr[i] + " Continue anyway?");
 				if (!d.yesPressed()) {
 					return false;
 				}
 			}
-		}		
+		}
 		return true;
 	}
-		
-	
+
+
 	public boolean save(ImagePlus imp) {
-		int i;
+		int i, j;
         double pixelwidth;
 		String s, unit;
         Polygon pol;
@@ -689,23 +689,23 @@ class ProfileData implements Options_Syn {
             if (!imp.getTitle().equals(this.prevImg)) {
                 this.n = 0;
                 this.prevImg = imp.getTitle();
-            } 
+            }
             this.n++;
             s = IJ.getString("Profile ID: ", IJ.d2s(this.ntot, 0));
             if (!s.equals("")) {
                 this.ID = s;
-            }            
+            }
             SaveDialog sd = new SaveDialog("Save profile",
-                                           imp.getTitle() + "." + 
+                                           imp.getTitle() + "." +
                                            IJ.d2s(this.n, 0), ".syn");
             if (sd.getFileName() == null) {
-                this.n--;                                            
+                this.n--;
                 return false;
             }
-            PrintWriter outf = 
+            PrintWriter outf =
                 new PrintWriter(
                         new BufferedWriter(
-                                new FileWriter(sd.getDirectory() + 
+                                new FileWriter(sd.getDirectory() +
                                                sd.getFileName())));
             String versionInfo = String.format("# %s version %s (%s %s, %s)",
                                                 VersionSyn.title,
@@ -713,7 +713,7 @@ class ProfileData implements Options_Syn {
                                                 VersionSyn.month,
                                                 VersionSyn.day,
                                                 VersionSyn.year);
-            outf.println(versionInfo);                
+            outf.println(versionInfo);
             outf.println("IMAGE " + imp.getTitle());
             outf.println("PROFILE_ID " + this.ID);
             outf.println("COMMENT " + this.comment);
@@ -725,32 +725,33 @@ class ProfileData implements Options_Syn {
                 unit = c.getUnit();
             }
             outf.println("PIXELWIDTH " + IJ.d2s(pixelwidth) + " " + unit);
-            outf.println("PRESYNAPTIC_PROFILE " + this.preProfile);                                                                        
+            outf.println("PRESYNAPTIC_PROFILE " + this.preProfile);
             outf.println("POSTSYNAPTIC_PROFILE " + this.poProfile);
             outf.println("POSTSYNAPTIC_ELEMENT");
             pol = this.overlay.get(this.overlay.getIndex("postsynaptic element")).getPolygon();
             for (i = 0; i < pol.npoints; i++) {
                 outf.println("  " + IJ.d2s(pol.xpoints[i], 0) + ", "+ IJ.d2s(pol.ypoints[i], 0));
             }
+            outf.println("END");            
             outf.println("PRESYNAPTIC_ELEMENT");
             pol = this.overlay.get(this.overlay.getIndex("presynaptic element")).getPolygon();
             for (i = 0; i < pol.npoints; i++) {
                 outf.println("  " + IJ.d2s(pol.xpoints[i], 0) + ", "+ IJ.d2s(pol.ypoints[i], 0));
             }
             outf.println("END");
-            for (n = 0; n < this.overlay.size(); n++) {
-                if (this.overlay.get(n).getName().equals("postsynaptic density")) {
+            for (j = 0; j < this.overlay.size(); j++) {
+                if (this.overlay.get(j).getName().equals("postsynaptic density")) {
                     outf.println("POSTSYNAPTIC_DENSITY");
-                    pol = this.overlay.get(n).getPolygon();
+                    pol = this.overlay.get(j).getPolygon();
                     for (i = 0; i < pol.npoints; i++)
                         outf.println("  " + IJ.d2s(pol.xpoints[i], 0) + ", "+ IJ.d2s(pol.ypoints[i], 0));
                     outf.println("END");
                 }
             }
-            for (n = 0; n < this.overlay.size(); n++) {
-                if (this.overlay.get(n).getName().equals("hole")) {
+            for (j = 0; j < this.overlay.size(); j++) {
+                if (this.overlay.get(j).getName().equals("hole")) {
                     outf.println("HOLE");
-                    pol = this.overlay.get(n).getPolygon();
+                    pol = this.overlay.get(j).getPolygon();
                     for (i = 0; i < pol.npoints; i++)
                         outf.println("  " + IJ.d2s(pol.xpoints[i], 0) + ", "+ IJ.d2s(pol.ypoints[i], 0));
                     outf.println("END");
@@ -779,13 +780,13 @@ class ProfileData implements Options_Syn {
         writeIDtext(imp);
         drawComponents(imp);
         this.ntot++;
-        SaveDialog sd = new SaveDialog("Save analyzed image", 
-                                       imp.getShortTitle(), 
+        SaveDialog sd = new SaveDialog("Save analyzed image",
+                                       imp.getShortTitle(),
                                        ".a.tif");
         if (sd.getFileName() != null) {
             FileSaver saveTiff = new FileSaver(imp);
             saveTiff.saveAsTiff(sd.getDirectory() + sd.getFileName());
-        }                                                              
+        }
 		return true;
 	}
 
